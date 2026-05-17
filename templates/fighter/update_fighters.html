@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    edit
+{% endblock %}
+
+{% block main %}.
+    <h1>Fighter Edit</h1>
+    <form method="post" action="{% url 'fighter_update' fighter.id %}">
+        {% csrf_token %}
+        {#        <label for="name">Fighter Name:</label>#}
+        {#        <input type="text" name="title" placeholder="Jangchi ismi ..." required value={{ fighter.name }}> <br> <br>#}
+        {#        <label for="nickname">Nickname:</label>#}
+        {#        <input type="text" name="nickname" placeholder="Jangchi Nickname..." required value={{ fighter.nickname }}><br>#}
+        {#        <br>#}
+        {#        <label for="weight_class">Weight class:</label>#}
+        {#        <input type="number" name="weight_class" placeholder="Jangchi vazni..." required value={{ fighter.weight_class }}> <br><br>#}
+        {{ form.as_p }}
+        <button>edit</button>
+        <a href="{% url 'fighter_list' %}">
+            back</a>
+    </form>
+
+
+
+{% endblock %}

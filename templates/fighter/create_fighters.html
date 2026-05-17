@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    create
+{% endblock %}
+
+{% block main %}
+    <h1>Fighter Create</h1>
+
+    <form method="post" action="{% url 'fighter_create' %}">
+        {% csrf_token %}
+
+        {#<label for="name">Fighter Name :</label>#}
+        {#<input type="text" name="name" placeholder="Jangchi ismi ..." required> <br><br>#}
+
+        {#<label for="nickname">Nickname:</label>#}
+        {#<input type="text" name="nickname" placeholder="Jangchi nickname..." required><br><br>#}
+
+        {#<label for="weight_class">Weight Class:</label>#}
+        {#<input type="number" name="weight_class" placeholder="Vazni..." required> <br><br>#}
+        {{form.as_p}}
+
+        <button>Save</button>
+
+        <a href="{% url 'fighter_list' %}">
+            back
+        </a>
+    </form>
+
+{% endblock %}
