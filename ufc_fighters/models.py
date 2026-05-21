@@ -12,6 +12,15 @@ class Fighter(BaseModel , DeleteModel):
     wins = models.IntegerField()
     losses = models.IntegerField()
 
+    image = models.ImageField(upload_to='fighters/',
+            null=True,
+            blank=True
+
+    )
+
+    video = models.FileField(upload_to='videos/',
+            null=True,
+            blank=True)
 
     def __str__(self):
         return self.name
