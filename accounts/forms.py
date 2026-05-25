@@ -5,12 +5,13 @@ from django.contrib.auth.models import User
 from django import forms
 
 
+
 class RegisterForm(forms.ModelForm):
     re_password = forms.CharField(widget=forms.PasswordInput)
 
     class Meta:
         model = User
-        fields = ('username', 'first_name', 'last_name', 'password', 're_password')
+        fields = ('username', 'first_name', 'email','last_name', 'password', 're_password')
         widgets = {
             'password': forms.PasswordInput(),
         }
@@ -50,3 +51,16 @@ class ProfileForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ('first_name', 'last_name', 'username')
+
+
+
+class ForgotPasswordForm(forms.Form):
+    username = forms.CharField(max_length=150)
+class RestorePasswordForm(forms.Form):
+    code = forms.IntegerField()
+    new_password = forms.CharField(
+        widget=forms.PasswordInput
+    )
+    confirm_password = forms.CharField(
+        widget=forms.PasswordInput
+    )
