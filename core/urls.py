@@ -31,7 +31,9 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('ufc_fighters/', include('ufc_fighters.urls')),
     path('accounts/', include('accounts.urls')),
+    path('accounts/', include('allauth.urls')),
     path('',home),
+    path('i18n/',include('django.conf.urls.i18n')),
 
 
 ]

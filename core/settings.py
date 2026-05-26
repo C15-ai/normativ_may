@@ -11,12 +11,17 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 from pathlib import Path
 import environ
-
+from django.urls import reverse_lazy
+from django.utils.translation import gettext_lazy as _
 
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+LOCALE_PATHS = [
+    BASE_DIR / 'locale',
+]
 
 env = environ.Env(
     DEBUG=(bool, False),
@@ -45,18 +50,34 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    # allauth
+    'django.contrib.sites',
+
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+
+    # google login uchun
+    'allauth.socialaccount.providers.google',
+
+    # local apps
     'ufc_fighters',
     'common',
     'accounts',
-
 ]
+
+SITE_ID = 1
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
@@ -132,13 +153,21 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+TIME_ZONE = 'Asia/Tashkent'
 
-TIME_ZONE = 'UTC'
+LANGUAGE_CODE = 'en'
 
 USE_I18N = True
+USE_L10N = True
 
 USE_TZ = True
+
+LANGUAGES = [
+    ('en', _('English')),
+    ('uz', _('O\'zbekcha')),
+    ('ru', _('Русский')),
+
+]
 
 
 # Static files (CSS, JavaScript, Images)
@@ -161,5 +190,8 @@ EMAIL_PORT = 587
 EMAIL_HOST_USER = 'tursunovm545@gmail.com'
 EMAIL_HOST_PASSWORD = 'csblnqygroqharzi'
 EMAIL_USE_TLS = True
+
+
+
 
 
