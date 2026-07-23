@@ -1,0 +1,146 @@
+{% extends 'base.html' %}
+
+{% block title %}Google Orqali Kirish{% endblock %}
+
+{% block main %}
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&display=swap');
+
+  .confirm-wrapper {
+    min-height: 80vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    background: linear-gradient(135deg, #e0e7ff 0%, #f0fdf4 50%, #fdf4ff 100%);
+    border-radius: 16px;
+    font-family: 'Sora', sans-serif;
+  }
+
+  .confirm-card {
+    width: 100%;
+    max-width: 400px;
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 2.5rem 2rem;
+    text-align: center;
+    box-shadow: 0 8px 32px rgba(99,102,241,0.10);
+  }
+
+  .google-ring {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.4rem;
+    width: 80px; height: 80px;
+    border-radius: 50%;
+    background: #f1f5f9;
+    border: 3px solid #e0e7ff;
+    overflow: hidden;
+  }
+
+  .google-ring img {
+    width: 48px; height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  .confirm-card h2 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 0.5rem;
+  }
+
+  .confirm-card .desc {
+    font-size: 0.85rem;
+    color: #94a3b8;
+    line-height: 1.6;
+    margin-bottom: 1.4rem;
+  }
+
+  .info-box {
+    background: #f1f5f9;
+    border-radius: 10px;
+    padding: 10px 14px;
+    margin-bottom: 1.5rem;
+    font-size: 0.78rem;
+    color: #64748b;
+    text-align: left;
+  }
+
+  .btn-google-confirm {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    padding: 12px 20px;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    border: none;
+    border-radius: 12px;
+    color: #fff;
+    font-size: 0.92rem;
+    font-weight: 600;
+    font-family: 'Sora', sans-serif;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.2s;
+    box-shadow: 0 4px 16px rgba(99,102,241,0.3);
+  }
+
+  .btn-google-confirm:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+  }
+
+  .btn-google-confirm .btn-google-img {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: #fff;
+    padding: 2px;
+    object-fit: contain;
+  }
+
+  .cancel-link {
+    display: block;
+    margin-top: 1rem;
+    font-size: 0.80rem;
+    color: #94a3b8;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .cancel-link:hover { color: #6366f1; }
+</style>
+
+<div class="confirm-wrapper">
+  <div class="confirm-card">
+
+    <div class="google-ring">
+      <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google">
+    </div>
+
+    {% if process == "connect" %}
+      <h2>{{ provider.name }} Ulash</h2>
+      <p class="desc">Siz <strong>{{ provider.name }}</strong> akkauntini tizimga ulayapsiz.</p>
+    {% else %}
+      <h2>{{ provider.name }} Orqali Kirish</h2>
+      <p class="desc">Siz <strong>{{ provider.name }}</strong> dan uchinchi tomon akkaunti orqali tizimga kirmoqchisiz.</p>
+    {% endif %}
+
+    <div class="info-box">
+      🔒 Bu xavfsiz OAuth 2.0 orqali amalga oshiriladi. Parolingiz saqlanmaydi.
+    </div>
+
+    <form method="post">
+      {% csrf_token %}
+      <button type="submit" class="btn-google-confirm">
+        <img class="btn-google-img" src="https://developers.google.com/identity/images/g-logo.png" alt="Google">
+        Davom Etish
+      </button>
+    </form>
+
+    <a href="/accounts/login/" class="cancel-link">← Bekor qilish</a>
+
+  </div>
+</div>
+{% endblock %}

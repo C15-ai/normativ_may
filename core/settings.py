@@ -184,11 +184,23 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 
+
+# AUTH_USER_MODEL = "accounts.User"
+
+GOOGLE_CLIENT_ID = env("GOOGLE_CLIENT_ID")
+GOOGLE_CLIENT_SECRET = "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"
+
+GOOGLE_REDIRECT_URI = 'http://127.0.0.1:8000/accounts/google/login/callback/'
+
+GOOGLE_AUTH_URL = "https://accounts.google.com/o/oauth2/auth"
+GOOGLE_TOKEN_URL = "https://oauth2.googleapis.com/token"
+GOOGLE_USER_INFO_URL = "https://www.googleapis.com/oauth2/v1/userinfo"
+
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_HOST_USER = 'tursunovm545@gmail.com'
-EMAIL_HOST_PASSWORD = 'csblnqygroqharzi'
+EMAIL_HOST_PASSWORD = 'nofyduwxdumouyyw'
 EMAIL_USE_TLS = True
 
 

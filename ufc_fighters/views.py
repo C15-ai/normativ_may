@@ -6,12 +6,15 @@ from .forms import FighterForm
 from django.db.models import Q
 from django.core.paginator import Paginator
 from django.contrib.auth.decorators import permission_required
+from django.contrib.auth.decorators import login_required
 
 
+@login_required
 def fighter_list(request):
     search = request.GET.get('search', '')
+
     page_number = request.GET.get('page')
-    print(page_number)
+
 
     fighter = Fighter.objects.filter()
     if search:
@@ -43,8 +46,7 @@ def fighter_update_form(request, pk=None):
     form = FighterForm(instance=fighter)
     return render(request, 'fighter/update_fighters.html', {'form': form, 'fighter': fighter, })
 
-
-@permission_required('fighter.change_fighter', raise_exception=True)
+@login_required
 def fighter_update(request, pk=None):
     fighter = Fighter.objects.filter(id=pk).first()
     if not fighter:
@@ -65,6 +67,15 @@ def fighter_delete(request, pk=None):
     Fighter.objects.filter(id=pk).update(is_active=False)
 
     return redirect('fighter_list')
+
+
+def fighter_detail(request, pk):
+    fighter = Fighter.objects.filter(id=pk).first()
+
+    if not fighter:
+        return redirect('fighter_list')
+
+    return render(request, 'fighter/detail.html', {'fighter': fighter})
 
 
 def logout_view(request):

@@ -8,9 +8,14 @@ from common.models import DeleteModel
 class Fighter(BaseModel , DeleteModel):
     name = models.CharField(max_length=255)
     nickname = models.CharField(max_length=255)
-    weight_class = models.IntegerField()
+    weight_class = models.CharField(max_length=255)
     wins = models.IntegerField()
     losses = models.IntegerField()
+    country = models.CharField(max_length=255)
+    country_flag = models.ImageField(upload_to='images/',
+            null=True,
+            blank=True
+    )
 
     image = models.ImageField(upload_to='fighters/',
             null=True,

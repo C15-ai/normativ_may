@@ -1,127 +1,510 @@
 {% extends 'base.html' %}
 
 {% block title %}
-Fighter list
+Fighter List
 {% endblock %}
 
 {% block main %}
 
-<div class="container mt-5">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="fw-bold">🥊 UFC Fighters</h1>
-        {% if perms.ufc_fighters.add_fighter %}
-        <a href="{% url 'fighter_create' %}" class="btn btn-dark">
-            + Create Fighter
+<style>
+
+    @import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&display=swap');
+
+    body{
+        font-family:'Sora',sans-serif;
+        transition:.3s;
+    }
+
+    /* LIGHT MODE */
+    body.light{
+        background:linear-gradient(135deg,#eef2ff,#f8fafc,#ecfeff);
+        color:#0f172a;
+    }
+
+    /* DARK MODE */
+    body.dark{
+        background:#0f172a;
+        color:#e2e8f0;
+    }
+
+    /* HEADER */
+    .fighter-header{
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        margin-bottom:35px;
+        flex-wrap:wrap;
+        gap:15px;
+    }
+
+    .fighter-title{
+        font-size:2.3rem;
+        font-weight:700;
+    }
+
+    /* BUTTONS */
+    .create-btn{
+        background:linear-gradient(135deg,#6366f1,#8b5cf6);
+        padding:12px 22px;
+        border-radius:14px;
+        color:white;
+        font-weight:600;
+        text-decoration:none;
+        transition:.3s;
+    }
+
+    .create-btn:hover{
+        transform:translateY(-2px);
+        color:white;
+    }
+
+    .dark-toggle{
+        padding:10px 16px;
+        border:none;
+        border-radius:12px;
+        cursor:pointer;
+        font-weight:600;
+    }
+
+    /* SEARCH */
+    .search-box{
+        background:white;
+        padding:12px;
+        border-radius:18px;
+        margin-bottom:35px;
+    }
+
+    body.dark .search-box{
+        background:#1e293b;
+    }
+
+    .search-input{
+        border:none;
+        box-shadow:none !important;
+        background:transparent !important;
+        color:inherit !important;
+    }
+
+    /* CARD */
+    .fighter-card{
+        border-radius:24px;
+        overflow:hidden;
+        transition:.3s;
+        height:100%;
+    }
+
+    body.light .fighter-card{
+        background:rgba(255,255,255,.9);
+        box-shadow:0 8px 30px rgba(0,0,0,.08);
+    }
+
+    body.dark .fighter-card{
+        background:#1e293b;
+        box-shadow:0 8px 30px rgba(0,0,0,.5);
+    }
+
+    .fighter-card:hover{
+        transform:translateY(-8px);
+    }
+
+    .fighter-image,
+    .fighter-video{
+        width:100%;
+        height:280px;
+        object-fit:cover;
+    }
+
+    /* CONTENT */
+    .card-content{
+        padding:22px;
+    }
+
+    .fighter-name{
+        font-size:1.4rem;
+        font-weight:700;
+    }
+
+    .nickname{
+        color:#94a3b8;
+    }
+
+    /* STATS */
+    .stats{
+        display:flex;
+        gap:10px;
+        margin:20px 0;
+    }
+
+    .stat-box{
+        flex:1;
+        padding:14px;
+        border-radius:14px;
+        text-align:center;
+    }
+
+    body.light .stat-box{
+        background:#f8fafc;
+    }
+
+    body.dark .stat-box{
+        background:#334155;
+    }
+
+    /* ACTION BUTTONS */
+    .action-buttons{
+        display:flex;
+        gap:10px;
+    }
+
+    .action-buttons a{
+        flex:1;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        padding:10px;
+        border-radius:12px;
+        text-decoration:none;
+        font-weight:600;
+        transition:.3s;
+    }
+
+    .edit-btn{
+        background:#facc15;
+        color:#111827;
+    }
+
+    .details-btn{
+        background:#3b82f6;
+        color:white;
+    }
+
+    .delete-btn{
+        background:#ef4444;
+        color:white;
+    }
+
+    .action-buttons a:hover{
+        transform:translateY(-2px);
+        opacity:.9;
+    }
+
+    .fighter-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:10px;
+    }
+
+   .fighter-flag{
+    width:42px;
+    height:42px;
+    object-fit:cover;
+    border-radius:50%;
+    border:3px solid rgba(255,255,255,.8);
+    box-shadow:0 4px 12px rgba(0,0,0,.15);
+    flex-shrink:0;
+    }
+
+    body.dark .fighter-flag{
+    border:3px solid #334155;
+    }
+
+    .fighter-created{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-top:10px;
+    padding:10px 14px;
+    border-radius:12px;
+    background:rgba(99,102,241,.08);
+    font-size:.8rem;
+    }
+
+    body.dark .fighter-created{
+    background:rgba(99,102,241,.15);
+    }
+
+
+
+
+    /* PAGINATION */
+    .pagination-wrapper{
+        margin-top:40px;
+        display:flex;
+        justify-content:center;
+        align-items:center;
+        gap:10px;
+        flex-wrap:wrap;
+    }
+
+    .page-btn{
+        width:45px;
+        height:45px;
+        border-radius:12px;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        text-decoration:none;
+        font-weight:700;
+        transition:.3s;
+    }
+
+    body.light .page-btn{
+        background:white;
+        color:#0f172a;
+        box-shadow:0 6px 20px rgba(0,0,0,.08);
+    }
+
+    body.dark .page-btn{
+        background:#1e293b;
+        color:white;
+        box-shadow:0 6px 20px rgba(0,0,0,.4);
+    }
+
+    .page-btn:hover{
+        transform:translateY(-3px);
+    }
+
+    .active-page{
+        background:linear-gradient(135deg,#6366f1,#8b5cf6) !important;
+        color:white !important;
+    }
+
+    /* RESPONSIVE */
+    @media(max-width:768px){
+
+        .fighter-header{
+            flex-direction:column;
+            align-items:flex-start;
+        }
+
+        .stats{
+            flex-direction:column;
+        }
+
+    }
+
+</style>
+
+<div class="container py-5">
+
+    <div class="fighter-header">
+
+        <h1 class="fighter-title">
+            🥊 UFC Fighters
+        </h1>
+
+        <div style="display:flex; gap:10px;">
+
+            <button class="dark-toggle" onclick="toggleDarkMode()">
+                <span class="icon">🌑</span>
+                <span class="text">Mode</span>
+            </button>
+
+            {% if perms.ufc_fighters.add_fighter %}
+            <a href="{% url 'fighter_create' %}" class="create-btn">
+                + Create Fighter
+            </a>
+            {% endif %}
+
+        </div>
+
+    </div>
+
+    <form method="get" class="search-box">
+
+        <input
+                type="text"
+                name="search"
+                value="{{ search }}"
+                class="form-control search-input"
+                placeholder="Search fighter..."
+        >
+
+    </form>
+
+    <div class="row">
+
+        {% for fighter in fighters %}
+
+        <div class="col-lg-4 col-md-6 mb-4">
+
+            <div class="fighter-card">
+
+                {% if fighter.image %}
+                <img
+                        src="{{ fighter.image.url }}"
+                        class="fighter-image"
+                >
+                {% endif %}
+
+                {% if fighter.video %}
+                <video
+                        class="fighter-video"
+                        controls
+                >
+                    <source src="{{ fighter.video.url }}" type="video/mp4">
+                </video>
+                {% endif %}
+
+                <div class="card-content">
+
+                    <div class="fighter-top">
+                        <h3 class="fighter-name">
+                            {{ fighter.name }}
+                        </h3>
+
+                        {% if fighter.country_flag %}
+                        <img
+                                src="{{ fighter.country_flag.url }}"
+                                alt="{{ fighter.country }}"
+                                class="fighter-flag"
+                        >
+                        {% endif %}
+
+                    </div>
+
+                    <p class="nickname">
+                        "{{ fighter.nickname }}"
+                    </p>
+                    <p style="font-size:0.8rem; color:#94a3b8; margin-top:-8px;">
+                        📅 {{ fighter.created_time|date:"d M Y, H:i" }}
+                    </p>
+
+
+                    <div class="stats">
+
+                        <div class="stat-box">
+                            <h6>Weight</h6>
+                            <p>{{ fighter.weight_class }}</p>
+                        </div>
+
+                        <div class="stat-box">
+                            <h6>Wins</h6>
+                            <p>{{ fighter.wins }}</p>
+                        </div>
+
+                        <div class="stat-box">
+                            <h6>Losses</h6>
+                            <p>{{ fighter.losses }}</p>
+                        </div>
+
+                    </div>
+
+                    <div class="action-buttons">
+
+                        {% if perms.ufc_fighters.change_fighter %}
+                        <a
+                                href="{% url 'fighter_update' fighter.id %}"
+                                class="edit-btn"
+                        >
+                            Edit
+                        </a>
+                        {% endif %}
+
+                        <a
+                                href="{% url 'fighter_detail' fighter.id %}"
+                                class="details-btn"
+                        >
+                            Detail
+                        </a>
+
+                        {% if perms.ufc_fighters.delete_fighter %}
+                        <a
+                                href="{% url 'fighter_delete' fighter.id %}"
+                                class="delete-btn"
+                        >
+                            Delete
+                        </a>
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        {% empty %}
+
+        <div class="col-12 text-center">
+            <h2>No fighters found 😢</h2>
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+    <div class="pagination-wrapper">
+
+        {% if fighters.has_previous %}
+        <a
+                href="?page={{ fighters.previous_page_number }}&search={{ search }}"
+                class="page-btn"
+        >
+            ←
+        </a>
+        {% endif %}
+
+        {% for num in fighters.paginator.page_range %}
+
+        {% if fighters.number == num %}
+
+        <span class="page-btn active-page">
+                {{ num }}
+            </span>
+
+        {% else %}
+
+        <a
+                href="?page={{ num }}&search={{ search }}"
+                class="page-btn"
+        >
+            {{ num }}
+        </a>
+
+        {% endif %}
+
+        {% endfor %}
+
+        {% if fighters.has_next %}
+        <a
+                href="?page={{ fighters.next_page_number }}&search={{ search }}"
+                class="page-btn"
+        >
+            →
         </a>
         {% endif %}
 
     </div>
-    <form method="get" class="mb-4">
-        <div class="input-group">
-            <input type="text"
-                   name="search"
-                   value="{{ search }}"
-                   class="form-control"
-                   placeholder="Search fighter...">
-            <button class="btn btn-outline-dark" type="submit">
-                Search
-            </button>
-        </div>
-    </form>
-    <div class="row">
-        {% for fighter in fighters %}
-        <div class="col-md-4 mb-4">
-            <div class="card shadow-sm h-100">
-                {% if fighter.image %}
-                <img src="{{ fighter.image.url }}"
-                     class="card-img-top"
-                     style="height: 250px; object-fit: cover;">
-                {% endif %}
-                {% if fighter.video %}
-                <video class="card-img-top video-thumb"
-                       controls
-                       preload="metadata"
-                       poster="/static/default-video.jpg"
-                       style="height: 250px; object-fit: cover;">
-                  <source src="{{ fighter.video.url }}" type="video/mp4">
-                </video>
-        {% endif %}
-                <div class="card-body">
-                    <h3 class="fw-bold">
-                        {{ fighter.name }}
-                    </h3>
-                    <p class="text-muted mb-3">
-                        Nickname: {{ fighter.nickname }}
-                    </p>
-                    <ul class="list-group list-group-flush mb-3">
-                        <li class="list-group-item">
-                            Weight Class:
-                            <b>{{ fighter.weight_class }}</b>
-                        </li>
-                        <li class="list-group-item">
-                            Wins:
-                            <b>{{ fighter.wins }}</b>
-                        </li>
-                        <li class="list-group-item">
-                            Losses:
-                            <b>{{ fighter.losses }}</b>
-                        </li>
-                    </ul>
-                    <div class="d-flex gap-2">
-                        {% if perms.ufc_fighters.change_fighter %}
-                        <a href="{% url 'fighter_update' fighter.id %}"
-                           class="btn btn-warning w-100">
-                            Edit
-                        </a>
-                        {% endif %}
-                        {% if perms.ufc_fighters.delete_fighter %}
-                        <a href="{% url 'fighter_delete' fighter.id %}"
-                           class="btn btn-danger w-100">
-                            Delete
-                        </a>
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
-        </div>
-        {% empty %}
-        <h3 class="text-center">No fighters found.</h3>
-        {% endfor %}
-    </div>
-    <nav class="mt-4">
-        <ul class="pagination justify-content-center">
-            {% if fighters.has_previous %}
-            <li class="page-item">
-                <a class="page-link"
-                   href="?page={{ fighters.previous_page_number }}&search={{ search }}">
-                    Previous
-                </a>
-            </li>
-            {% endif %}
-            {% for num in fighters.paginator.page_range %}
 
-                {% if fighters.number == num %}
-                <li class="page-item active">
-                    <span class="page-link">{{ num }}</span>
-                </li>
-                {% else %}
-                <li class="page-item">
-                    <a class="page-link"
-                       href="?page={{ num }}&search={{ search }}">
-                        {{ num }}
-                    </a>
-                </li>
-                {% endif %}
-            {% endfor %}
-            {% if fighters.has_next %}
-            <li class="page-item">
-                <a class="page-link"
-                   href="?page={{ fighters.next_page_number }}&search={{ search }}">
-                    Next
-                </a>
-            </li>
-            {% endif %}
-        </ul>
-    </nav>
 </div>
+
+<script>
+
+    function setMode(mode){
+        document.body.className = mode;
+        localStorage.setItem("mode", mode);
+    }
+
+    function toggleDarkMode(){
+
+        if(document.body.classList.contains("dark")){
+            setMode("light");
+        }else{
+            setMode("dark");
+        }
+
+    }
+
+    window.onload = function(){
+
+        let mode = localStorage.getItem("mode") || "light";
+        setMode(mode);
+
+    }
+
+</script>
+
 {% endblock %}

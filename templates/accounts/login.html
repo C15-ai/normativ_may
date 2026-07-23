@@ -1,17 +1,261 @@
 {% extends 'base.html' %}
+{% load socialaccount %}
 
-{% block title %}
-    login
-{% endblock %}
+{% block title %}Kirish{% endblock %}
 
 {% block main %}
-    <div class="container">
-        <h1>Login</h1>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&display=swap');
+
+    .login-wrapper {
+      min-height: 80vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      background: linear-gradient(135deg, #e0e7ff 0%, #f0fdf4 50%, #fdf4ff 100%);
+      border-radius: 16px;
+      font-family: 'Sora', sans-serif;
+    }
+
+    .login-card {
+      width: 100%;
+      max-width: 400px;
+      background: #ffffff;
+      border-radius: 20px;
+      padding: 2.5rem 2rem;
+      box-shadow: 0 8px 32px rgba(99,102,241,0.10);
+    }
+
+    .login-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #ede9fe;
+      border-radius: 100px;
+      padding: 4px 12px;
+      font-size: 11px;
+      font-weight: 600;
+      color: #7c3aed;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 1.2rem;
+    }
+
+    .login-badge .dot {
+      width: 6px; height: 6px;
+      background: #7c3aed;
+      border-radius: 50%;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.8); }
+    }
+
+    .login-title {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: #1e293b;
+      margin-bottom: 0.3rem;
+      letter-spacing: -0.02em;
+    }
+
+    .login-subtitle {
+      font-size: 0.85rem;
+      color: #94a3b8;
+      margin-bottom: 1.8rem;
+    }
+
+    /* Django form fields */
+    .login-card form p {
+      margin-bottom: 1rem;
+    }
+
+    .login-card form p label {
+      display: block;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #64748b;
+      margin-bottom: 5px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .login-card form p input {
+      width: 100%;
+      padding: 11px 14px;
+      background: #f8fafc;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 10px;
+      color: #1e293b;
+      font-size: 0.92rem;
+      font-family: 'Sora', sans-serif;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .login-card form p input:focus {
+      border-color: #6366f1;
+      box-shadow: 0 0 0 3px rgba(99,102,241,0.12);
+      background: #fff;
+    }
+
+    .errorlist {
+      list-style: none;
+      margin: 4px 0 0; padding: 0;
+    }
+
+    .errorlist li {
+      font-size: 0.75rem;
+      color: #ef4444;
+    }
+
+    /* Login button */
+    .btn-login {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      padding: 12px 20px;
+      margin-top: 0.4rem;
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      border: none;
+      border-radius: 12px;
+      color: #fff;
+      font-size: 0.92rem;
+      font-weight: 600;
+      font-family: 'Sora', sans-serif;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.2s;
+      box-shadow: 0 4px 16px rgba(99,102,241,0.25);
+    }
+
+    .btn-login:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
+    }
+
+    /* Divider */
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 1.4rem 0 1.1rem;
+    }
+
+    .divider::before, .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: #e2e8f0;
+    }
+
+    .divider span {
+      font-size: 0.72rem;
+      color: #94a3b8;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    /* Google button */
+    .btn-google {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      padding: 11px 20px;
+      background: #f8fafc;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 12px;
+      color: #334155;
+      font-size: 0.88rem;
+      font-weight: 500;
+      font-family: 'Sora', sans-serif;
+      text-decoration: none;
+      transition: background 0.2s, border-color 0.2s, transform 0.2s;
+    }
+
+    .btn-google:hover {
+      background: #f1f5f9;
+      border-color: #c7d2fe;
+      transform: translateY(-1px);
+      color: #1e293b;
+      text-decoration: none;
+    }
+
+    .btn-google .g-icon {
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      padding: 2px;
+      object-fit: contain;
+    }
+
+    .login-footer {
+      text-align: center;
+      margin-top: 1.2rem;
+      font-size: 0.80rem;
+      color: #94a3b8;
+    }
+
+    .login-footer a {
+      color: #6366f1;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .login-footer a:hover { color: #4f46e5; }
+</style>
+
+<div class="login-wrapper">
+    <div class="login-card">
+
+        <div class="login-badge">
+            <span class="dot"></span>
+            Xavfsiz kirish
+        </div>
+
+        <h1 class="login-title">Xush kelibsiz</h1>
+        <p class="login-subtitle">Akkauntingizga kirish uchun ma'lumot kiriting</p>
+
         <form method="post">
             {% csrf_token %}
             {{ form.as_p }}
-            <button>login</button>
+            <button type="submit" class="btn-login">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
+                    <polyline points="10 17 15 12 10 7"/>
+                    <line x1="15" y1="12" x2="3" y2="12"/>
+                </svg>
+                Kirish
+            </button>
         </form>
 
+        <p style="text-align:right; margin-top: 6px;">
+            <a href="{% url 'forgot_password' %}"
+               style="font-size:0.8rem; color:#6366f1; text-decoration:none; font-weight:600;">
+                Parolni unutdingizmi?
+            </a>
+        </p>
+
+        <div class="divider"><span>yoki</span></div>
+
+        <a href="{% provider_login_url 'google' %}" class="btn-google">
+            <img class="g-icon" src="https://developers.google.com/identity/images/g-logo.png" alt="Google">
+            Google orqali kirish
+        </a>
+
+        <p class="login-footer">
+            Akkaunt yo'qmi? <a href="{% url 'register' %}">Ro'yxatdan o'tish</a>
+        </p>
+
     </div>
+</div>
 {% endblock %}

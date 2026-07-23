@@ -1,27 +1,327 @@
 {% extends 'base.html' %}
 
 {% block title %}
-    edit
+Edit Fighter
 {% endblock %}
 
-{% block main %}.
-    <h1>Fighter Edit</h1>
-    <form method="post" enctype="multipart/form-data">
+{% block main %}
 
-        {% csrf_token %}
-        {#        <label for="name">Fighter Name:</label>#}
-        {#        <input type="text" name="title" placeholder="Jangchi ismi ..." required value={{ fighter.name }}> <br> <br>#}
-        {#        <label for="nickname">Nickname:</label>#}
-        {#        <input type="text" name="nickname" placeholder="Jangchi Nickname..." required value={{ fighter.nickname }}><br>#}
-        {#        <br>#}
-        {#        <label for="weight_class">Weight class:</label>#}
-        {#        <input type="number" name="weight_class" placeholder="Jangchi vazni..." required value={{ fighter.weight_class }}> <br><br>#}
-        {{ form.as_p }}
-        <button>edit</button>
-        <a href="{% url 'fighter_list' %}">
-            back</a>
-    </form>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&display=swap');
 
+body{
+    font-family:'Sora',sans-serif;
+    background:linear-gradient(135deg,#eef2ff,#f8fafc,#ecfeff);
+}
 
+.edit-wrapper{
+    min-height:85vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:40px 20px;
+}
+
+.edit-card{
+    width:100%;
+    max-width:720px;
+    background:rgba(255,255,255,0.88);
+    backdrop-filter:blur(14px);
+    border-radius:28px;
+    padding:40px;
+    box-shadow:0 15px 40px rgba(15,23,42,.08);
+}
+
+.edit-badge{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    background:#dbeafe;
+    color:#2563eb;
+    padding:8px 16px;
+    border-radius:999px;
+    font-size:12px;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:.08em;
+    margin-bottom:18px;
+}
+
+.badge-dot{
+    width:8px;
+    height:8px;
+    background:#2563eb;
+    border-radius:50%;
+    animation:pulse 1.8s infinite;
+}
+
+@keyframes pulse{
+    0%,100%{
+        transform:scale(1);
+        opacity:1;
+    }
+    50%{
+        transform:scale(.7);
+        opacity:.5;
+    }
+}
+
+.edit-title{
+    font-size:2rem;
+    font-weight:700;
+    color:#0f172a;
+    margin-bottom:8px;
+}
+
+.edit-subtitle{
+    color:#64748b;
+    margin-bottom:35px;
+}
+
+.edit-card form p{
+    margin-bottom:20px;
+}
+
+.edit-card form label{
+    display:block;
+    margin-bottom:8px;
+    font-size:13px;
+    font-weight:600;
+    color:#475569;
+    text-transform:uppercase;
+    letter-spacing:.05em;
+}
+
+.edit-card form input,
+.edit-card form textarea,
+.edit-card form select{
+    width:100%;
+    padding:14px 16px;
+    border-radius:16px;
+    border:1.5px solid #e2e8f0;
+    background:#f8fafc;
+    outline:none;
+    transition:.25s;
+    font-size:.95rem;
+}
+
+.edit-card form input:focus,
+.edit-card form textarea:focus,
+.edit-card form select:focus{
+    border-color:#2563eb;
+    background:white;
+    box-shadow:0 0 0 4px rgba(37,99,235,.12);
+}
+
+.edit-card form textarea{
+    min-height:120px;
+    resize:none;
+}
+
+.current-image{
+    width:100%;
+    height:260px;
+    object-fit:cover;
+    border-radius:20px;
+    margin-bottom:20px;
+    box-shadow:0 8px 20px rgba(0,0,0,.08);
+}
+
+.form-buttons{
+    display:flex;
+    gap:14px;
+    margin-top:30px;
+}
+
+.edit-btn{
+    flex:1;
+    border:none;
+    background:linear-gradient(135deg,#2563eb,#3b82f6);
+    color:white;
+    padding:14px;
+    border-radius:16px;
+    font-weight:600;
+    transition:.3s;
+    box-shadow:0 10px 25px rgba(37,99,235,.25);
+}
+
+.edit-btn:hover{
+    transform:translateY(-2px);
+}
+
+.back-btn{
+    flex:1;
+    text-decoration:none;
+    text-align:center;
+    background:#f1f5f9;
+    color:#0f172a;
+    padding:14px;
+    border-radius:16px;
+    font-weight:600;
+    transition:.3s;
+}
+
+.back-btn:hover{
+    background:#e2e8f0;
+    color:#0f172a;
+}
+
+.active-box{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    margin-top:10px;
+    margin-bottom:20px;
+}
+
+.active-text{
+    font-weight:600;
+    color:#334155;
+}
+
+.switch{
+    position:relative;
+    display:inline-block;
+    width:58px;
+    height:30px;
+}
+
+.switch input{
+    opacity:0;
+    width:0;
+    height:0;
+}
+
+.slider{
+    position:absolute;
+    cursor:pointer;
+    top:0;
+    left:0;
+    right:0;
+    bottom:0;
+    background:#cbd5e1;
+    transition:.4s;
+    border-radius:50px;
+}
+
+.slider:before{
+    position:absolute;
+    content:"";
+    height:22px;
+    width:22px;
+    left:4px;
+    bottom:4px;
+    background:white;
+    transition:.4s;
+    border-radius:50%;
+}
+
+.switch input:checked + .slider{
+    background:linear-gradient(135deg,#2563eb,#3b82f6);
+}
+
+.switch input:checked + .slider:before{
+    transform:translateX(28px);
+}
+
+.helptext{
+    font-size:12px;
+    color:#94a3b8;
+}
+
+.errorlist{
+    list-style:none;
+    padding:0;
+    margin:6px 0 0;
+}
+
+.errorlist li{
+    color:#ef4444;
+    font-size:13px;
+}
+</style>
+
+<div class="edit-wrapper">
+
+    <div class="edit-card">
+
+        <div class="edit-badge">
+            <span class="badge-dot"></span>
+            UPDATE PANEL
+        </div>
+
+        <h1 class="edit-title">
+            ✏️ Edit Fighter
+        </h1>
+
+        <p class="edit-subtitle">
+            Update fighter information
+        </p>
+
+        {% if fighter.image %}
+            <img src="{{ fighter.image.url }}"
+                 class="current-image">
+        {% endif %}
+
+        <form method="post" enctype="multipart/form-data">
+
+            {% csrf_token %}
+
+            {% for field in form %}
+
+                {% if field.name == 'is_active' %}
+
+                    <div class="active-box">
+
+                        <label class="switch">
+
+                            {{ field }}
+
+                            <span class="slider"></span>
+
+                        </label>
+
+                        <span class="active-text">
+                            Active Fighter
+                        </span>
+
+                    </div>
+
+                {% else %}
+
+                    <p>
+
+                        {{ field.label_tag }}
+
+                        {{ field }}
+
+                        {% if field.errors %}
+                            {{ field.errors }}
+                        {% endif %}
+
+                    </p>
+
+                {% endif %}
+
+            {% endfor %}
+
+            <div class="form-buttons">
+
+                <button type="submit" class="edit-btn">
+                    Update Fighter
+                </button>
+
+                <a href="{% url 'fighter_list' %}"
+                   class="back-btn">
+                    Back
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
 
 {% endblock %}
